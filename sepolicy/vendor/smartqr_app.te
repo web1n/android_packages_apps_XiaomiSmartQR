@@ -1,0 +1,5 @@
+allow smartqr_app vendor_hal_camera_aon_service:service_manager find;
+
+# AON is hosted in the camera provider, including synchronous listener callbacks.
+binder_call(smartqr_app, hal_camera_default)
+binder_call(hal_camera_default, smartqr_app)

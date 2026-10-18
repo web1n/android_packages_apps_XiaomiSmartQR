@@ -1,0 +1,2 @@
+# Public so the device vendor policy can grant access to its AON HAL.
+type smartqr_app, domain;

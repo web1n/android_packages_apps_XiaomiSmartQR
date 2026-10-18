@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 soong_namespace {
+    imports: ["hardware/xiaomi"],
 }
 
 android_app {
@@ -14,5 +15,6 @@ android_app {
         "androidx.preference_preference",
         "org.lineageos.settings.resources",
         "SettingsLib",
+        "vendor.xiaomi.hardware.aon-V1-java",
     ],
 }

@@ -1,0 +1,6 @@
+typeattribute smartqr_app coredomain, mlstrustedsubject;
+app_domain(smartqr_app)
+platform_app_domain(smartqr_app)
+
+allow smartqr_app system_app_data_file:dir create_dir_perms;
+allow smartqr_app system_app_data_file:file create_file_perms;
