@@ -2,4 +2,7 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 <resources>
     <string name="app_name">智能扫码服务</string>
+    <string name="settings_summary">在桌面检测附近的二维码</string>
+    <string name="enable_title">使用智能扫码服务</string>
+    <string name="feature_description">手机解锁并停留在桌面时，将后置摄像头对准二维码并保持稳定。检测到二维码后显示提示</string>
 </resources>

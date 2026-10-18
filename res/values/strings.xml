@@ -2,4 +2,7 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 <resources>
     <string name="app_name">Smart Scan Service</string>
+    <string name="settings_summary">Detect nearby QR codes on the home screen</string>
+    <string name="enable_title">Use Smart Scan Service</string>
+    <string name="feature_description">When the phone is unlocked on the home screen, hold it steady and point the rear camera at a QR code. When a code is detected, show a message</string>
 </resources>
