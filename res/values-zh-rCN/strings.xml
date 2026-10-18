@@ -7,4 +7,13 @@
     <string name="feature_description">手机解锁并停留在桌面时，将后置摄像头对准二维码并保持稳定。检测到二维码后显示提示</string>
     <string name="status_sensor_missing">此设备未提供二维码手势传感器</string>
     <string name="qr_detected_toast">检测到二维码</string>
+    <string name="scan_apps_title">扫码应用</string>
+    <string name="scan_app_chooser">每次选择</string>
+    <string name="scan_app_wechat">微信</string>
+    <string name="scan_app_alipay">支付宝</string>
+    <string name="scan_app_unionpay">云闪付</string>
+    <string name="scan_app_qq">QQ</string>
+    <string name="scan_app_not_installed">应用未安装或已停用</string>
+    <string name="scan_app_unavailable">扫码入口不可用</string>
+    <string name="scan_app_launch_failed">检测到二维码，但无法打开扫码应用</string>
 </resources>

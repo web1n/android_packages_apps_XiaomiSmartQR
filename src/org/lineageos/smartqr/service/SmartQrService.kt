@@ -120,6 +120,7 @@ class SmartQrService : Service() {
         if (!result || !isReady()) return
 
         Toast.makeText(this, R.string.qr_detected_toast, Toast.LENGTH_SHORT).show()
+        SmartQrPreferences.selectedScanApp(this).open(this)
     }
 
     private fun isReady(): Boolean =

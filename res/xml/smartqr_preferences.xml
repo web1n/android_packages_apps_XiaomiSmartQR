@@ -8,4 +8,7 @@
         android:persistent="false" />
     <com.android.settingslib.widget.FooterPreference
         android:title="@string/feature_description" android:selectable="false" />
+    <PreferenceCategory android:key="scan_apps"
+        android:dependency="smartqr_enabled"
+        android:title="@string/scan_apps_title" />
 </PreferenceScreen>

@@ -7,4 +7,13 @@
     <string name="feature_description">When the phone is unlocked on the home screen, hold it steady and point the rear camera at a QR code. When a code is detected, show a message</string>
     <string name="status_sensor_missing">This device does not provide the QR gesture sensor</string>
     <string name="qr_detected_toast">QR code detected</string>
+    <string name="scan_apps_title">Scanner app</string>
+    <string name="scan_app_chooser">Ask every time</string>
+    <string name="scan_app_wechat">WeChat</string>
+    <string name="scan_app_alipay">Alipay</string>
+    <string name="scan_app_unionpay">UnionPay</string>
+    <string name="scan_app_qq">QQ</string>
+    <string name="scan_app_not_installed">App is not installed or is disabled</string>
+    <string name="scan_app_unavailable">Scanner entry point is unavailable</string>
+    <string name="scan_app_launch_failed">QR code detected, but the scanner could not be opened</string>
 </resources>
