@@ -6,6 +6,7 @@ import com.android.settingslib.widget.MainSwitchPreference
 import com.android.settingslib.widget.SettingsBasePreferenceFragment
 import org.lineageos.smartqr.QrGestureSensor
 import org.lineageos.smartqr.R
+import org.lineageos.smartqr.service.SmartQrService
 import org.lineageos.smartqr.util.SmartQrPreferences
 
 class SmartQrSettingsFragment : SettingsBasePreferenceFragment() {
@@ -21,6 +22,7 @@ class SmartQrSettingsFragment : SettingsBasePreferenceFragment() {
 
         enable.setOnPreferenceChangeListener { _, value ->
             SmartQrPreferences.setEnabled(context, value as Boolean)
+            SmartQrService.start(context)
             true
         }
     }

@@ -10,11 +10,21 @@ android_app {
     platform_apis: true,
     privileged: true,
     system_ext_specific: true,
+    required: ["config-smartqr"],
     static_libs: [
         "androidx.core_core",
         "androidx.preference_preference",
+        "kotlinx_coroutines_android",
         "org.lineageos.settings.resources",
         "SettingsLib",
         "vendor.xiaomi.hardware.aon-V1-java",
     ],
+}
+
+prebuilt_etc {
+    name: "config-smartqr",
+    src: "config-smartqr.xml",
+    relative_install_path: "sysconfig",
+    system_ext_specific: true,
+    filename_from_src: true,
 }

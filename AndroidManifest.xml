@@ -13,8 +13,13 @@
         android:allowBackup="false"
         android:icon="@drawable/ic_smartqr"
         android:label="@string/app_name"
+        android:persistent="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.SubSettingsBase.Expressive">
+
+        <service
+            android:name=".service.SmartQrService"
+            android:exported="false" />
 
         <activity
             android:name=".ui.SmartQrSettingsActivity"
