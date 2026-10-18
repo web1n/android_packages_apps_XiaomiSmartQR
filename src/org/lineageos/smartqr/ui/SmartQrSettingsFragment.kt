@@ -4,6 +4,7 @@ package org.lineageos.smartqr.ui
 import android.os.Bundle
 import com.android.settingslib.widget.MainSwitchPreference
 import com.android.settingslib.widget.SettingsBasePreferenceFragment
+import org.lineageos.smartqr.QrGestureSensor
 import org.lineageos.smartqr.R
 import org.lineageos.smartqr.util.SmartQrPreferences
 
@@ -14,6 +15,10 @@ class SmartQrSettingsFragment : SettingsBasePreferenceFragment() {
         setPreferencesFromResource(R.xml.smartqr_preferences, rootKey)
 
         val context = requireContext()
+        val supported = QrGestureSensor.isSupported(context)
+        enable.isEnabled = supported
+        enable.summary = if (supported) null else getString(R.string.status_sensor_missing)
+
         enable.setOnPreferenceChangeListener { _, value ->
             SmartQrPreferences.setEnabled(context, value as Boolean)
             true
