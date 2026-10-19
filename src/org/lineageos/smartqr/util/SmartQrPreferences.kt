@@ -12,7 +12,7 @@ internal object SmartQrPreferences {
         context.getSharedPreferences("smartqr", Context.MODE_PRIVATE)
 
     fun selectedScanApp(context: Context): ScanApp =
-        ScanApp.fromValue(get(context).getString(SCAN_APP, ScanApp.CHOOSER.value))
+        ScanApp.fromValue(context, get(context).getString(SCAN_APP, ScanApp.CHOOSER))
 
     fun setScanApp(context: Context, app: ScanApp) {
         get(context).edit().putString(SCAN_APP, app.value).apply()

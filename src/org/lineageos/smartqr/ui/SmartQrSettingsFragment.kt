@@ -25,7 +25,7 @@ class SmartQrSettingsFragment : SettingsBasePreferenceFragment() {
         enable.summary = if (supported) null else getString(R.string.status_sensor_missing)
 
         val category = findPreference<PreferenceCategory>("scan_apps")!!
-        for (app in ScanApp.entries) {
+        for (app in ScanApp.entries(context)) {
             val preference = SelectorWithWidgetPreference(context).apply {
                 key = "scan_app_${app.value}"
                 setTitle(app.titleText(context))

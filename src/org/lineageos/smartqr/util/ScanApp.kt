@@ -5,55 +5,45 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import java.net.URISyntaxException
 import org.lineageos.smartqr.R
 
-internal enum class ScanApp(
-    val title: Int,
+internal data class ScanApp(
+    val value: String,
+    private val title: String,
     private val packageName: String? = null,
-    private val intent: Intent? = null,
+    private val intentUri: String? = null,
 ) {
-    CHOOSER(R.string.scan_app_chooser),
-    DEFAULT(R.string.scan_app_system),
-    WECHAT(
-        R.string.scan_app_wechat,
-        "com.tencent.mm",
-        Intent()
-            .setComponent(ComponentName("com.tencent.mm", "com.tencent.mm.ui.LauncherUI"))
-            .putExtra("LauncherUI.From.Scaner.Shortcut", true),
-    ),
-    ALIPAY(
-        R.string.scan_app_alipay,
-        "com.eg.android.AlipayGphone",
-        Intent(Intent.ACTION_VIEW, Uri.parse("alipayqr://platformapi/startapp?saId=10000007")),
-    ),
-    UNIONPAY(
-        R.string.scan_app_unionpay,
-        "com.unionpay",
-        Intent(Intent.ACTION_VIEW, Uri.parse("upwallet://native/scanCode")),
-    ),
-    QQ(
-        R.string.scan_app_qq,
-        "com.tencent.mobileqq",
-        Intent(Intent.ACTION_MAIN)
-            .addCategory(Intent.CATEGORY_LAUNCHER)
-            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            .putExtra("shortcut_jump", "mqqapi://qrscan/open?source=1"),
-    );
-
-    val value: String = name.lowercase()
-
     companion object {
+        const val CHOOSER = "chooser"
+        private const val DEFAULT = "default"
         private const val TAG = "ScanApp"
         private const val DEBUG = true
 
-        fun fromValue(value: String?): ScanApp =
-            entries.firstOrNull { it.value == value } ?: CHOOSER
+        fun entries(context: Context): List<ScanApp> {
+            val resources = context.resources
+            val apps = resources.obtainTypedArray(R.array.scan_apps)
+            try {
+                return List(apps.length()) { index ->
+                    val entry = resources.getStringArray(apps.getResourceId(index, 0))
+                    ScanApp(entry[0], entry[1], entry.getOrNull(2), entry.getOrNull(3))
+                }
+            } finally {
+                apps.recycle()
+            }
+        }
+
+        fun fromValue(context: Context, value: String?): ScanApp {
+            val apps = entries(context)
+            return apps.firstOrNull { it.value == value } ?: apps.first { it.value == CHOOSER }
+        }
     }
 
     fun unavailableReason(context: Context): Int {
+        if (resolveIntent(context) != null) return 0
+
         val name = packageName
 
         if (name != null) {
@@ -66,12 +56,12 @@ internal enum class ScanApp(
             }
         }
 
-        return if (resolveIntent(context) == null) R.string.scan_app_unavailable else 0
+        return R.string.scan_app_unavailable
     }
 
     fun titleText(context: Context): String {
-        if (this != DEFAULT) return context.getString(title)
-        return appLabel(context) ?: context.getString(R.string.scan_app_system)
+        if (value != DEFAULT) return title
+        return appLabel(context) ?: title
     }
 
     private fun appLabel(context: Context): String? {
@@ -99,8 +89,9 @@ internal enum class ScanApp(
     }
 
     private fun resolveIntent(context: Context): Intent? {
-        if (this == CHOOSER) {
-            val intents = entries.filter { it != CHOOSER }.mapNotNull { it.resolveIntent(context) }
+        if (value == CHOOSER) {
+            val intents = entries(context).filter { it.value != CHOOSER }
+                .mapNotNull { it.resolveIntent(context) }
             val target = intents.firstOrNull() ?: return null
             return Intent.createChooser(target, context.getString(R.string.scan_apps_title))
                 .putExtra(Intent.EXTRA_AUTO_LAUNCH_SINGLE_CHOICE, false)
@@ -108,17 +99,20 @@ internal enum class ScanApp(
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
 
-        val target: Intent = if (this == DEFAULT) {
+        val target: Intent = if (value == DEFAULT) {
             Intent().setComponent(resolveDefaultComponent(context) ?: return null)
         } else {
-            Intent(intent ?: return null).setPackage(packageName)
+            try {
+                Intent.parseUri(intentUri ?: return null, 0).setPackage(packageName)
+            } catch (e: URISyntaxException) {
+                Log.w(TAG, "Invalid scanner intent: $value", e)
+                return null
+            }
         }
         val info = context.packageManager.resolveActivity(target, 0)?.activityInfo ?: return null
         val permission = info.permission
         if (
             (packageName != null && info.packageName != packageName) ||
-                !info.enabled ||
-                !info.applicationInfo.enabled ||
                 !info.exported ||
                 (permission != null &&
                     context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED)

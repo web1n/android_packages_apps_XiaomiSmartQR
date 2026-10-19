@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <array name="scan_apps">
+        <item>@array/scan_app_chooser</item>
+        <item>@array/scan_app_system</item>
+        <item>@array/scan_app_wechat</item>
+        <item>@array/scan_app_alipay</item>
+        <item>@array/scan_app_unionpay</item>
+        <item>@array/scan_app_qq</item>
+    </array>
+
+    <string-array name="scan_app_chooser" translatable="false">
+        <item>chooser</item>
+        <item>@string/scan_app_chooser</item>
+    </string-array>
+
+    <string-array name="scan_app_system" translatable="false">
+        <item>default</item>
+        <item>@string/scan_app_system</item>
+    </string-array>
+
+    <string-array name="scan_app_wechat" translatable="false">
+        <item>wechat</item>
+        <item>@string/scan_app_wechat</item>
+        <item>com.tencent.mm</item>
+        <item>#Intent;component=com.tencent.mm/.ui.LauncherUI;B.LauncherUI.From.Scaner.Shortcut=true;end</item>
+    </string-array>
+
+    <string-array name="scan_app_alipay" translatable="false">
+        <item>alipay</item>
+        <item>@string/scan_app_alipay</item>
+        <item>com.eg.android.AlipayGphone</item>
+        <item>alipayqr://platformapi/startapp?saId=10000007</item>
+    </string-array>
+
+    <string-array name="scan_app_unionpay" translatable="false">
+        <item>unionpay</item>
+        <item>@string/scan_app_unionpay</item>
+        <item>com.unionpay</item>
+        <item>upwallet://native/scanCode</item>
+    </string-array>
+
+    <string-array name="scan_app_qq" translatable="false">
+        <item>qq</item>
+        <item>@string/scan_app_qq</item>
+        <item>com.tencent.mobileqq</item>
+        <item>#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x24000000;S.shortcut_jump=mqqapi%3A%2F%2Fqrscan%2Fopen%3Fsource%3D1;end</item>
+    </string-array>
+</resources>
