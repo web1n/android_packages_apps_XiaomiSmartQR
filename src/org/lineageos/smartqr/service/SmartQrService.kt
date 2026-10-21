@@ -17,6 +17,7 @@ import org.lineageos.smartqr.QrDetector
 import org.lineageos.smartqr.QrGestureSensor
 import org.lineageos.smartqr.R
 import org.lineageos.smartqr.ScreenStateMonitor
+import org.lineageos.smartqr.camera.CameraAvailabilityMonitor
 import org.lineageos.smartqr.ui.TopToast
 import org.lineageos.smartqr.util.LinkLauncher
 import org.lineageos.smartqr.util.SmartQrPreferences
@@ -39,8 +40,9 @@ class SmartQrService : Service() {
     private val foreground by lazy { DesktopMonitor() }
     private val screen by lazy { ScreenStateMonitor(this) }
     private val gesture by lazy { QrGestureSensor(this) }
+    private val camera by lazy { CameraAvailabilityMonitor(this) }
     private val detector by lazy {
-        QrDetector(this, scope, ::isReady, ::onAonDetected, ::onDetectionFinished)
+        QrDetector(this, scope, ::canDetect, ::onAonDetected, ::onDetectionFinished)
     }
 
     private val foregroundListener = DesktopMonitor.Listener { _ ->
@@ -57,6 +59,7 @@ class SmartQrService : Service() {
     override fun onCreate() {
         super.onCreate()
         if (DEBUG) Log.d(TAG, "Creating service")
+        camera.start()
         foreground.addListener(foregroundListener)
         screen.addListener(screenListener)
     }
@@ -75,6 +78,7 @@ class SmartQrService : Service() {
         foreground.removeListener(foregroundListener)
         screen.removeListener(screenListener)
         gesture.removeListener(gestureListener)
+        camera.stop()
 
         detector.cancel()
         scope.cancel()
@@ -137,6 +141,15 @@ class SmartQrService : Service() {
     private fun showDetectionToast(message: Int) {
         detectionToast?.cancel()
         detectionToast = TopToast(this, getText(message)).apply { show() }
+    }
+
+    private fun canDetect(): Boolean {
+        val available = camera.isAvailable
+        val ready = isReady()
+        if (DEBUG && (!available || !ready)) {
+            Log.d(TAG, "Skipping detection: cameraAvailable=$available ready=$ready")
+        }
+        return available && ready
     }
 
     private fun isReady(): Boolean =

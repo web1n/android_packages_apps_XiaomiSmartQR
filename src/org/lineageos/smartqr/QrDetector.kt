@@ -39,7 +39,7 @@ internal class QrDetector(
     private var aon: AonServiceHelper? = null
 
     fun start() {
-        if (job?.isCompleted == false) return
+        if (job?.isCompleted == false || !canDetect()) return
 
         job = scope.launch {
             onResult(detect())
