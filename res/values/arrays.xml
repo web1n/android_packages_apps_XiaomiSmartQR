@@ -47,4 +47,26 @@
         <item>com.tencent.mobileqq</item>
         <item>#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x24000000;S.shortcut_jump=mqqapi%3A%2F%2Fqrscan%2Fopen%3Fsource%3D1;end</item>
     </string-array>
+
+    <array name="app_link_rules">
+        <item>@array/app_link_alipay</item>
+        <item>@array/app_link_wechat</item>
+    </array>
+
+    <array name="app_link_alipay">
+        <item>com.eg.android.AlipayGphone</item>
+        <item>alipays://platformapi/startapp?appId=20000067&amp;url=${URLENCODED}</item>
+        <item>https://qr.alipay.com/</item>
+    </array>
+
+    <array name="app_link_wechat">
+        <item>com.tencent.mm</item>
+        <item>#Intent;component=com.tencent.mm/.ui.LauncherUI;B.LauncherUI.From.Scaner.Shortcut=true;end</item>
+        <item>@array/app_link_wechat_prefixes</item>
+    </array>
+
+    <string-array name="app_link_wechat_prefixes" translatable="false">
+        <item>wxp://</item>
+        <item>https://u.wechat.com/</item>
+    </string-array>
 </resources>
