@@ -19,6 +19,7 @@ android_app {
         "SettingsLib",
         "vendor.xiaomi.hardware.aon-V1-java",
         "vendor.xiaomi.sensor.camera-V1-java",
+        "zxing-core",
     ],
 }
 

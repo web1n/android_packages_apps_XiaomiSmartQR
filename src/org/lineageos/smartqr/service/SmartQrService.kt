@@ -39,7 +39,7 @@ class SmartQrService : Service() {
     private val screen by lazy { ScreenStateMonitor(this) }
     private val gesture by lazy { QrGestureSensor(this) }
     private val detector by lazy {
-        QrDetector(scope, ::isReady, ::onDetectionFinished)
+        QrDetector(this, scope, ::isReady, ::onDetectionFinished)
     }
 
     private val foregroundListener = DesktopMonitor.Listener { _ ->
@@ -114,11 +114,12 @@ class SmartQrService : Service() {
         if (!enabled) stopSelf()
     }
 
-    private fun onDetectionFinished(result: Boolean) {
-        val cooldown = if (result) DETECTED_COOLDOWN_MS else RETRY_COOLDOWN_MS
+    private fun onDetectionFinished(text: String?) {
+        val cooldown = if (text != null) DETECTED_COOLDOWN_MS else RETRY_COOLDOWN_MS
         cooldownUntil = SystemClock.elapsedRealtime() + cooldown
-        if (!result || !isReady()) return
+        if (text == null || !isReady()) return
 
+        if (DEBUG) Log.d(TAG, "Decoded QR code: $text")
         Toast.makeText(this, R.string.qr_detected_toast, Toast.LENGTH_SHORT).show()
         SmartQrPreferences.selectedScanApp(this).open(this)
     }
