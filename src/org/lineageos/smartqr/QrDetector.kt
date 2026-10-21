@@ -24,6 +24,7 @@ internal class QrDetector(
     private val context: Context,
     private val scope: CoroutineScope,
     private val canDetect: () -> Boolean,
+    private val onAonDetected: () -> Unit,
     private val onResult: (String?) -> Unit,
 ) {
     companion object {
@@ -56,6 +57,7 @@ internal class QrDetector(
     private suspend fun detect(): String? {
         return try {
             if (!release() || !detectAon() || !canDetect()) return null
+            onAonDetected()
             withTimeout(DECODE_TIMEOUT_MS) { awaitQrCode() }
         } catch (_: TimeoutCancellationException) {
             Log.w(TAG, "QR decoding timed out")

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
-import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -18,6 +17,7 @@ import org.lineageos.smartqr.QrDetector
 import org.lineageos.smartqr.QrGestureSensor
 import org.lineageos.smartqr.R
 import org.lineageos.smartqr.ScreenStateMonitor
+import org.lineageos.smartqr.ui.TopToast
 import org.lineageos.smartqr.util.LinkLauncher
 import org.lineageos.smartqr.util.SmartQrPreferences
 
@@ -40,7 +40,7 @@ class SmartQrService : Service() {
     private val screen by lazy { ScreenStateMonitor(this) }
     private val gesture by lazy { QrGestureSensor(this) }
     private val detector by lazy {
-        QrDetector(this, scope, ::isReady, ::onDetectionFinished)
+        QrDetector(this, scope, ::isReady, ::onAonDetected, ::onDetectionFinished)
     }
 
     private val foregroundListener = DesktopMonitor.Listener { _ ->
@@ -52,6 +52,7 @@ class SmartQrService : Service() {
     private var destroyed = false
     private var desktopSince = 0L
     private var cooldownUntil = 0L
+    private var detectionToast: TopToast? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -77,6 +78,7 @@ class SmartQrService : Service() {
 
         detector.cancel()
         scope.cancel()
+        detectionToast?.cancel()
         super.onDestroy()
     }
 
@@ -115,14 +117,26 @@ class SmartQrService : Service() {
         if (!enabled) stopSelf()
     }
 
+    private fun onAonDetected() {
+        showDetectionToast(R.string.qr_detecting_toast)
+    }
+
     private fun onDetectionFinished(text: String?) {
         val cooldown = if (text != null) DETECTED_COOLDOWN_MS else RETRY_COOLDOWN_MS
         cooldownUntil = SystemClock.elapsedRealtime() + cooldown
-        if (text == null || !isReady()) return
+        if (text == null || !isReady()) {
+            detectionToast?.cancel()
+            return
+        }
 
         if (DEBUG) Log.d(TAG, "Decoded QR code: $text")
-        Toast.makeText(this, R.string.qr_detected_toast, Toast.LENGTH_SHORT).show()
+        showDetectionToast(R.string.qr_detected_toast)
         LinkLauncher.open(this, text)
+    }
+
+    private fun showDetectionToast(message: Int) {
+        detectionToast?.cancel()
+        detectionToast = TopToast(this, getText(message)).apply { show() }
     }
 
     private fun isReady(): Boolean =
