@@ -8,6 +8,13 @@
         android:persistent="false" />
     <com.android.settingslib.widget.FooterPreference
         android:title="@string/feature_description" android:selectable="false" />
+    <SwitchPreferenceCompat
+        android:key="prefer_default_app"
+        android:dependency="smartqr_enabled"
+        android:title="@string/prefer_default_app_title"
+        android:summary="@string/prefer_default_app_summary"
+        android:defaultValue="true"
+        android:persistent="false" />
     <PreferenceCategory android:key="scan_apps"
         android:dependency="smartqr_enabled"
         android:title="@string/scan_apps_title" />

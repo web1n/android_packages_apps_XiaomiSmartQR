@@ -3,6 +3,7 @@ package org.lineageos.smartqr.ui
 
 import android.os.Bundle
 import androidx.preference.PreferenceCategory
+import androidx.preference.SwitchPreferenceCompat
 import com.android.settingslib.widget.MainSwitchPreference
 import com.android.settingslib.widget.SelectorWithWidgetPreference
 import com.android.settingslib.widget.SettingsBasePreferenceFragment
@@ -14,6 +15,9 @@ import org.lineageos.smartqr.util.SmartQrPreferences
 
 class SmartQrSettingsFragment : SettingsBasePreferenceFragment() {
     private val enable by lazy { findPreference<MainSwitchPreference>(SmartQrPreferences.ENABLED)!! }
+    private val preferDefaultApp by lazy {
+        findPreference<SwitchPreferenceCompat>(SmartQrPreferences.PREFER_DEFAULT_APP)!!
+    }
     private val scanApps = mutableMapOf<ScanApp, SelectorWithWidgetPreference>()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -23,6 +27,11 @@ class SmartQrSettingsFragment : SettingsBasePreferenceFragment() {
         val supported = QrGestureSensor.isSupported(context)
         enable.isEnabled = supported
         enable.summary = if (supported) null else getString(R.string.status_sensor_missing)
+
+        preferDefaultApp.setOnPreferenceChangeListener { _, value ->
+            SmartQrPreferences.setPreferDefaultApp(context, value as Boolean)
+            true
+        }
 
         val category = findPreference<PreferenceCategory>("scan_apps")!!
         for (app in ScanApp.entries(context)) {
@@ -47,8 +56,10 @@ class SmartQrSettingsFragment : SettingsBasePreferenceFragment() {
 
     override fun onResume() {
         super.onResume()
+        val context = requireContext()
         updateScanApps()
-        enable.isChecked = SmartQrPreferences.isEnabled(requireContext())
+        enable.isChecked = SmartQrPreferences.isEnabled(context)
+        preferDefaultApp.isChecked = SmartQrPreferences.preferDefaultApp(context)
     }
 
     private fun updateScanApps() {

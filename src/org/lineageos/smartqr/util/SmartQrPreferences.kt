@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 
 internal object SmartQrPreferences {
     const val ENABLED = "smartqr_enabled"
+    const val PREFER_DEFAULT_APP = "prefer_default_app"
     private const val SCAN_APP = "scan_app"
 
     private fun get(context: Context): SharedPreferences =
@@ -23,4 +24,11 @@ internal object SmartQrPreferences {
     }
 
     fun isEnabled(context: Context): Boolean = get(context).getBoolean(ENABLED, false)
+
+    fun preferDefaultApp(context: Context): Boolean =
+        get(context).getBoolean(PREFER_DEFAULT_APP, true)
+
+    fun setPreferDefaultApp(context: Context, enabled: Boolean) {
+        get(context).edit().putBoolean(PREFER_DEFAULT_APP, enabled).apply()
+    }
 }

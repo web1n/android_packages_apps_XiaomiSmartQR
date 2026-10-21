@@ -12,7 +12,10 @@ internal object LinkLauncher {
     private const val DEBUG = true
 
     fun open(context: Context, text: String) {
-        if (openAppLink(context, text)) return
+        if (SmartQrPreferences.preferDefaultApp(context)) {
+            if (openAppLink(context, text)) return
+        }
+
         SmartQrPreferences.selectedScanApp(context).open(context)
     }
 

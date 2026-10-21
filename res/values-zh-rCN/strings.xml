@@ -7,6 +7,8 @@
     <string name="feature_description">返回桌面、拿起手机并对准二维码，自动打开选择的扫码应用（使用低功耗传感器）</string>
     <string name="status_sensor_missing">此设备未提供二维码手势传感器</string>
     <string name="qr_detected_toast">检测到二维码</string>
+    <string name="prefer_default_app_title">优先选择默认应用</string>
+    <string name="prefer_default_app_summary">优先使用链接的默认应用，无法打开时使用下方选择的扫码应用</string>
     <string name="scan_apps_title">扫码应用</string>
     <string name="scan_app_chooser">每次选择</string>
     <string name="scan_app_system">系统扫码</string>

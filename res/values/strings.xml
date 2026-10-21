@@ -7,6 +7,8 @@
     <string name="feature_description">Return to the home screen, pick up your phone and point it at a QR code. It automatically opens the selected scanner app (using a low-power sensor)</string>
     <string name="status_sensor_missing">This device does not provide the QR gesture sensor</string>
     <string name="qr_detected_toast">QR code detected</string>
+    <string name="prefer_default_app_title">Prefer default apps</string>
+    <string name="prefer_default_app_summary">Open links in their default app, otherwise use the selected scanner app</string>
     <string name="scan_apps_title">Scanner app</string>
     <string name="scan_app_chooser">Ask every time</string>
     <string name="scan_app_system">System scan</string>
