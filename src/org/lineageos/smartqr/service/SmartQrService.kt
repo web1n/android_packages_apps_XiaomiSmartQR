@@ -18,6 +18,7 @@ import org.lineageos.smartqr.QrDetector
 import org.lineageos.smartqr.QrGestureSensor
 import org.lineageos.smartqr.R
 import org.lineageos.smartqr.ScreenStateMonitor
+import org.lineageos.smartqr.util.LinkLauncher
 import org.lineageos.smartqr.util.SmartQrPreferences
 
 class SmartQrService : Service() {
@@ -121,7 +122,7 @@ class SmartQrService : Service() {
 
         if (DEBUG) Log.d(TAG, "Decoded QR code: $text")
         Toast.makeText(this, R.string.qr_detected_toast, Toast.LENGTH_SHORT).show()
-        SmartQrPreferences.selectedScanApp(this).open(this)
+        LinkLauncher.open(this, text)
     }
 
     private fun isReady(): Boolean =
