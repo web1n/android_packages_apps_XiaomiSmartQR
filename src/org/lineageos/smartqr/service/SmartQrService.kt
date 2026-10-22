@@ -15,10 +15,9 @@ import kotlinx.coroutines.launch
 import org.lineageos.smartqr.DesktopMonitor
 import org.lineageos.smartqr.QrDetector
 import org.lineageos.smartqr.QrGestureSensor
-import org.lineageos.smartqr.R
 import org.lineageos.smartqr.ScreenStateMonitor
 import org.lineageos.smartqr.camera.CameraAvailabilityMonitor
-import org.lineageos.smartqr.ui.TopToast
+import org.lineageos.smartqr.ui.ScanStatusNotification
 import org.lineageos.smartqr.util.LinkLauncher
 import org.lineageos.smartqr.util.SmartQrPreferences
 
@@ -41,6 +40,7 @@ class SmartQrService : Service() {
     private val screen by lazy { ScreenStateMonitor(this) }
     private val gesture by lazy { QrGestureSensor(this) }
     private val camera by lazy { CameraAvailabilityMonitor(this) }
+    private val status by lazy { ScanStatusNotification(this) }
     private val detector by lazy {
         QrDetector(this, scope, ::canDetect, ::onAonDetected, ::onDetectionFinished)
     }
@@ -54,11 +54,11 @@ class SmartQrService : Service() {
     private var destroyed = false
     private var desktopSince = 0L
     private var cooldownUntil = 0L
-    private var detectionToast: TopToast? = null
 
     override fun onCreate() {
         super.onCreate()
         if (DEBUG) Log.d(TAG, "Creating service")
+        status.cancel()
         camera.start()
         foreground.addListener(foregroundListener)
         screen.addListener(screenListener)
@@ -82,7 +82,7 @@ class SmartQrService : Service() {
 
         detector.cancel()
         scope.cancel()
-        detectionToast?.cancel()
+        status.cancel()
         super.onDestroy()
     }
 
@@ -105,7 +105,8 @@ class SmartQrService : Service() {
         if (destroyed) return
 
         val enabled = SmartQrPreferences.isEnabled(this)
-        val desktop = enabled && screen.isReady() && foreground.isHomeForeground()
+        val ready = screen.isReady()
+        val desktop = enabled && ready && foreground.isHomeForeground()
         if (desktop) {
             gesture.addListener(gestureListener)
         } else {
@@ -117,30 +118,32 @@ class SmartQrService : Service() {
         } else {
             desktopSince = 0
             detector.cancel()
+            if (enabled && ready) {
+                status.cancelDetecting()
+            } else {
+                status.cancel()
+            }
         }
+
         if (!enabled) stopSelf()
     }
 
     private fun onAonDetected() {
-        showDetectionToast(R.string.qr_detecting_toast)
+        status.showDetecting()
     }
 
     private fun onDetectionFinished(text: String?) {
         val cooldown = if (text != null) DETECTED_COOLDOWN_MS else RETRY_COOLDOWN_MS
         cooldownUntil = SystemClock.elapsedRealtime() + cooldown
         if (text == null || !isReady()) {
-            detectionToast?.cancel()
+            status.cancel()
             return
         }
 
         if (DEBUG) Log.d(TAG, "Decoded QR code: $text")
-        showDetectionToast(R.string.qr_detected_toast)
-        LinkLauncher.open(this, text)
-    }
+        status.showDetected(text)
 
-    private fun showDetectionToast(message: Int) {
-        detectionToast?.cancel()
-        detectionToast = TopToast(this, getText(message)).apply { show() }
+        LinkLauncher.open(this, text)
     }
 
     private fun canDetect(): Boolean {
