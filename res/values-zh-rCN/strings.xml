@@ -10,7 +10,6 @@
     <string name="prefer_default_app_summary">优先使用链接的默认应用，无法打开时使用下方选择的扫码应用</string>
     <string name="scan_apps_title">扫码应用</string>
     <string name="scan_app_chooser">每次选择</string>
-    <string name="scan_app_system">系统扫码</string>
     <string name="scan_app_wechat">微信</string>
     <string name="scan_app_alipay">支付宝</string>
     <string name="scan_app_unionpay">云闪付</string>

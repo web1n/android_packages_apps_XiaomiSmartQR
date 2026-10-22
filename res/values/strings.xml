@@ -12,7 +12,6 @@
     <string name="prefer_default_app_summary">Open links in their default app, otherwise use the selected scanner app</string>
     <string name="scan_apps_title">Scanner app</string>
     <string name="scan_app_chooser">Ask every time</string>
-    <string name="scan_app_system">System scan</string>
     <string name="scan_app_wechat">WeChat</string>
     <string name="scan_app_alipay">Alipay</string>
     <string name="scan_app_unionpay">UnionPay</string>

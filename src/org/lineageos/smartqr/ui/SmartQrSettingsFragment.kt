@@ -37,7 +37,7 @@ class SmartQrSettingsFragment : SettingsBasePreferenceFragment() {
         for (app in ScanApp.entries(context)) {
             val preference = SelectorWithWidgetPreference(context).apply {
                 key = "scan_app_${app.value}"
-                setTitle(app.titleText(context))
+                setTitle(app.title)
                 isPersistent = false
                 setOnClickListener {
                     SmartQrPreferences.setScanApp(context, app)

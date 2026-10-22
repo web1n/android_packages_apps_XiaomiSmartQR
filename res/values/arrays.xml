@@ -3,7 +3,6 @@
 <resources>
     <array name="scan_apps">
         <item>@array/scan_app_chooser</item>
-        <item>@array/scan_app_system</item>
         <item>@array/scan_app_wechat</item>
         <item>@array/scan_app_alipay</item>
         <item>@array/scan_app_unionpay</item>
@@ -13,11 +12,6 @@
     <string-array name="scan_app_chooser" translatable="false">
         <item>chooser</item>
         <item>@string/scan_app_chooser</item>
-    </string-array>
-
-    <string-array name="scan_app_system" translatable="false">
-        <item>default</item>
-        <item>@string/scan_app_system</item>
     </string-array>
 
     <string-array name="scan_app_wechat" translatable="false">

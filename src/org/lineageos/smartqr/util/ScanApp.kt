@@ -12,13 +12,12 @@ import org.lineageos.smartqr.R
 
 internal data class ScanApp(
     val value: String,
-    private val title: String,
+    val title: String,
     private val packageName: String? = null,
     private val intentUri: String? = null,
 ) {
     companion object {
         const val CHOOSER = "chooser"
-        private const val DEFAULT = "default"
         private const val TAG = "ScanApp"
         private const val DEBUG = true
 
@@ -59,21 +58,6 @@ internal data class ScanApp(
         return R.string.scan_app_unavailable
     }
 
-    fun titleText(context: Context): String {
-        if (value != DEFAULT) return title
-        return appLabel(context) ?: title
-    }
-
-    private fun appLabel(context: Context): String? {
-        val packageName = resolveIntent(context)?.component?.packageName ?: return null
-        return try {
-            val info = context.packageManager.getApplicationInfo(packageName, 0)
-            context.packageManager.getApplicationLabel(info).toString().ifBlank { null }
-        } catch (_: PackageManager.NameNotFoundException) {
-            null
-        }
-    }
-
     fun open(context: Context) {
         if (DEBUG) Log.d(TAG, "Opening scanner: $value")
         try {
@@ -99,20 +83,16 @@ internal data class ScanApp(
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
 
-        val target: Intent = if (value == DEFAULT) {
-            Intent().setComponent(resolveDefaultComponent(context) ?: return null)
-        } else {
-            try {
-                Intent.parseUri(intentUri ?: return null, 0).setPackage(packageName)
-            } catch (e: URISyntaxException) {
-                Log.w(TAG, "Invalid scanner intent: $value", e)
-                return null
-            }
+        val target = try {
+            Intent.parseUri(intentUri ?: return null, 0).setPackage(packageName)
+        } catch (e: URISyntaxException) {
+            Log.w(TAG, "Invalid scanner intent: $value", e)
+            return null
         }
         val info = context.packageManager.resolveActivity(target, 0)?.activityInfo ?: return null
         val permission = info.permission
         if (
-            (packageName != null && info.packageName != packageName) ||
+            info.packageName != packageName ||
                 !info.exported ||
                 (permission != null &&
                     context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED)
@@ -122,12 +102,5 @@ internal data class ScanApp(
         return target
             .setComponent(ComponentName(info.packageName, info.name))
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    }
-
-    private fun resolveDefaultComponent(context: Context): ComponentName? {
-        val value = context.resources.getString(
-            com.android.internal.R.string.config_defaultQrCodeComponent
-        )
-        return value.takeIf { it.isNotBlank() }?.let { ComponentName.unflattenFromString(it) }
     }
 }
